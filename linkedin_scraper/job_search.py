@@ -33,11 +33,12 @@ class JobSearch(Scraper):
 
 
     def scrape_job_card(self, base_element) -> Job:
-        job_div = self.wait_for_element_to_load(name="job-card-list__title", base=base_element)
+        job_div = self.wait_for_element_to_load(name="job-card-list__title--link", base=base_element)
         job_title = job_div.text.strip()
         linkedin_url = job_div.get_attribute("href")
-        company = base_element.find_element_by_class_name("artdeco-entity-lockup__subtitle").text
-        location = base_element.find_element_by_class_name("job-card-container__metadata-wrapper").text
+
+        company = base_element.find_elements(By.CLASS_NAME, "artdeco-entity-lockup__subtitle")[0].text
+        location = base_element.find_elements(By.CLASS_NAME, "job-card-container__metadata-wrapper")[0].text
         job = Job(linkedin_url=linkedin_url, job_title=job_title, company=company, location=location, scrape=False, driver=self.driver)
         return job
 
@@ -69,7 +70,7 @@ class JobSearch(Scraper):
         self.focus()
         sleep(self.WAIT_FOR_ELEMENT_TIMEOUT)
 
-        job_listing_class_name = "jobs-search-results-list"
+        job_listing_class_name = "bmneyvcsyJQLUJRbVrfBkyewMaEqzVKyMUg"
         job_listing = self.wait_for_element_to_load(name=job_listing_class_name)
 
         self.scroll_class_name_element_to_page_percent(job_listing_class_name, 0.3)
@@ -88,4 +89,5 @@ class JobSearch(Scraper):
         for job_card in self.wait_for_all_elements_to_load(name="job-card-list", base=job_listing):
             job = self.scrape_job_card(job_card)
             job_results.append(job)
+            print('SCRAPING', job)
         return job_results
