@@ -124,13 +124,7 @@ class Company(Scraper):
         next_xpath = '//button[@aria-label="Next"]'
         driver = self.driver
 
-        try:
-            see_all_employees = driver.find_element(By.XPATH,'//a[@data-control-name="topcard_see_all_employees"]')
-        except:
-            pass
         driver.get(os.path.join(self.linkedin_url, "people"))
-
-        _ = WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.XPATH, '//span[@dir="ltr"]')))
 
         driver.execute_script("window.scrollTo(0, Math.ceil(document.body.scrollHeight/2));")
         time.sleep(1)
